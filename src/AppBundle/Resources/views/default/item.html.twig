@@ -1,0 +1,190 @@
+{% extends 'AppBundle:default:layout.html.twig' %}
+{% block content %}
+	<div class="detailbox">
+		<div class="btitle" style="text-align:center; font-size:28px; padding-bottom:10px;">{{ item.name }}</div>
+		<div class="picbox">
+			<img src="{{ asset('uploads/') }}{{ item.detailImgUrl }}" onClick="showdetail(this)" />
+			<div class="bar">
+				<p class="bg"></p>
+				<div class="clearfix"><em><i style="text-decoration: line-through;font-size:28px; ">原价：{{ item.price | number_format(2) }}元</i>&nbsp;&nbsp;<i style="font-size:38px;font-style:normal;color:#990000;">砍至最低：{{ item.discountPrice | number_format }}元</i></em></div>
+			</div>
+		</div>
+
+		<div class="intros">{{ item.intro }}</div>
+		<div class="cutlist">
+			<div class="person">
+				<img src="{{ bargain.user.headImg }}/64"   >
+			</div>
+			<p class="pname">{{ bargain.user.nickName }}</p>
+			<div id="bargain-info">
+				<div class="cutdetail">{{ item.name }}&nbsp;帮忙砍价已有{{ bargain.num }}人<br>当前{{ discount_price | raw }}<em>元</em>&nbsp;可砍至{{ item.discountPrice | number_format }}元，还需{{ item.bargainNum - bargain.num }}人帮忙砍价</div>
+				<div class="cutfunc">
+					{% if ((app.request.get('user_id') == null or user.id == app.request.get('user_id')) and item.isActive == 1) %}
+						<a href="javascript:void(0)" onClick="sharepop()">让朋友帮忙砍</a>
+						{% elseif (item.num <= item.winNum or item.isActive == 0) %}
+						{% else %}
+						<a href="{{ url('_bargain',{bargain_id:bargain.id, store_id:item.store.id}) }}" class="btn-bargain">帮他砍砍价</a>
+						<a href="javascript:void(0)" onClick="sharepop()">我要参与活动</a>
+					{% endif %}
+				</div>
+				<div class="cutman">
+					<ul>
+						{% for log in logs %}
+							<li class="clearfix">
+								<img src="{{ log.user.headImg }}/64"/>
+								<p class="fl">{{ log.user.nickName }}</p>
+								<p class="fr">砍了{{ log.price }}元</p>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		$(window).scroll(function () {
+			var t = $(window).scrollTop();
+			var hh = $(window).height();
+			$("#rulepop").css('top', t +116 )
+			$(".sharetips,.poperr,.popsuc").css('top',t+77);
+		})
+		var hh=$(document).height();
+		$("#bgblack,.picpop").height(hh)
+
+
+		function showdetail(obj){
+			$("#move").attr('style','');
+			$("#move").attr('src',$(obj).attr('src'));
+			$("#bgblack,.picpop").show();
+			$(".picpop").click(function(){
+				
+				$("#bgblack,.picpop").hide();
+				posX = 0, posY = 0,
+				lastposX=0,lastposY=0,
+				scale = 1, last_scale = 1,
+				rotation = 0, last_rotation = 0;
+			})
+			move_picture();		
+			
+		}
+
+
+
+		var posX = 0, posY = 0,
+		lastposX=0,lastposY=0,
+		scale = 1, last_scale = 1,
+		rotation = 0, last_rotation = 0;
+
+		function move_picture() {
+			if(!Hammer.HAS_TOUCHEVENTS && !Hammer.HAS_POINTEREVENTS) {
+				Hammer.plugins.fakeMultitouch();
+			}
+
+			var hammertime = Hammer(document.getElementById('move'), {
+				preventDefault		: true,
+				transformMinScale   : 1,
+				dragBlockHorizontal : true,
+				dragBlockVertical   : true,
+				dragMinDistance     : 0
+			});
+
+			var rect = document.getElementById('move');
+
+			hammertime.on('touch drag transform', function(ev) {
+
+
+				switch(ev.type) {
+					case 'touch':
+					last_scale = scale;
+					//last_rotation = rotation;
+					lastposX=posX;
+					lastposY=posY
+					break;
+
+					case 'drag':
+					posX = lastposX+ev.gesture.deltaX;
+					posY = lastposY+ev.gesture.deltaY;
+					
+					break;
+
+					case 'transform':
+					rotation = last_rotation + ev.gesture.rotation;
+					scale = Math.max(0.01, Math.min(last_scale * ev.gesture.scale, 10));
+					
+					break;
+				}
+
+			// transform!
+
+			var transform =
+			"translate(" + posX + "px," + posY + "px) " +
+			"scale(" + scale + "," + scale + ") " ;
+			
+			
+			$(rect).css('webkitTransform',transform)
+			
+		});
+		}
+
+
+
+
+		$().ready(function(){
+			$(".btn-bargain").click(function(){
+				var url = $(this).attr('href');
+				$.getJSON(url,function(json){
+					if(json.ret == 0){
+						$(".bgblack,.popsuc").show();
+						var url1 = '{{ url("_bargain_info",{bargain_id:bargain.id,store_id:item.store.id,user_id:app.request.get('user_id')}) }}'+'?_='+Math.random();
+						$('#bargain-info').load(url1);
+					}
+					else{
+						$(".poperr").show().find("p").html(json.msg);
+					}
+				});
+				return false;
+			});
+		})
+		function showrule(){
+			$("#bgblack,#rulepop").show();
+		}
+		function hiderule(){
+			$("#bgblack,#rulepop").hide();
+		}
+
+		function sharepop(){
+			$("#bgblack,.sharetips").show();
+			$("#bgblack,.sharetips").bind('touchstart',function(){
+				$("#bgblack,.sharetips").hide();
+			})
+		}
+
+		function showSuc(){
+			$("#bgblack,.popsuc").show();
+			return false;
+		}
+		function closeSuc(){
+			$("#bgblack,.popsuc").hide();
+			return false;
+		}
+		function showErr(){
+			$("#bgblack,.poperr").show();
+			return false;
+		}
+		function closeErr(){
+			$("#bgblack,.poperr").hide();
+			return false;
+		}
+		
+		
+
+
+		
+
+
+	</script>
+{% endblock %}

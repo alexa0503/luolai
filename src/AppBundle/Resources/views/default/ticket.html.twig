@@ -1,0 +1,61 @@
+{% extends 'AppBundle:default:layout.html.twig' %}
+{% block content %}
+<div style="height:14px;background-color:#8c0e32;"></div>
+	{% if bargain != null %}
+		<div style="text-align:center; padding-top:30px;">
+	        <input class="txtinput" name="password" id="password" type="text" placeholder="密码">
+	    </div>
+	    <div style="text-align:center;padding-top:20px;">
+	        <a href="javascript:void(0)" class="btnsub">提&nbsp;&nbsp;交</a>
+	    </div>
+	{% else %}
+		<div style="text-align:center; padding-top:30px;">
+		<h3>此页面不存在</h3></div>
+	{% endif %}
+{% endblock %}
+{% block pop %}
+<div class="popsuc none" style="display: none;">
+    <div class="ico1"></div>
+    <span onclick="closeSuc()"></span>
+    <p>感谢你的参与</p>
+    <div>购买成功</div>
+    <a href="javascript:void(0)" onclick="closeSuc()">关闭</a>
+</div>
+<div  class="poperr none">
+    <div class="ico2"></div>
+    <span onclick="closeErr()"></span>
+    <p>请登录</p>
+    <div>购买失败</div>
+    <a href="javascript:void(0)" onclick="closeErr()">关闭</a>
+</div>
+    {% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	{% if bargain != null %}
+	<script type="text/javascript">
+	$("body").css("background-color","#8c0e32");
+        var url = '{{ url("_ticket_post",{bargain_id:bargain.id, store_id: bargain.item.store.id}) }}';
+        $.getJSON(url, function(json){
+            if(json.ret == 0){
+                $(".popsuc").find("p").html(json.msg);
+                $(".popsuc").show();
+            }
+            else if(json.ret == 1500 || json.ret == 1501 || json.ret == 1502 || json.ret == 1503 || json.ret == 1504){
+                $(".poperr").find("p").html(json.msg);
+                $(".poperr").show();
+            }
+        })
+        $('.btnsub').click(function(){
+        var url = '{{ url("_ticket_login",{bargain_id:bargain.id, store_id: bargain.item.store.id}) }}';
+            var password = $('#password').val();
+            $.post(url, {password:password}, function(json){
+                if(json.ret == 0)
+                    location.reload();
+                else
+                    alert(json.msg)
+            },"JSON");
+            return false;
+        })
+	</script>
+	{% endif %}
+{% endblock %}

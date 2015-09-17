@@ -1,0 +1,136 @@
+{% extends 'AppBundle:admin:layout.html.twig' %}
+{% block content %}
+	<div class="row">
+		{% form_theme form 'bootstrap_3_layout.html.twig' %}
+			<form class="form-horizontal" method="post" action="{{ app.request.uri }}" name="form" novalidate="novalidate" id="form-user">
+			 <div class="panel panel-default">
+			  <div class="panel-heading">
+			   <h4 class="panel-title">{{ pageTitle }}</h4>
+			   <p>{{ form_errors(form) }}</p>
+		   </div>
+		   <div class="panel-body">
+			   <div class="form-group">
+				{{ form_label(form.username, '用户名', {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+				<div class="col-sm-10">
+				 {{ form_widget(form.username, {'attr':{'class':'form-control', 'placeholder':'请输入用户名'}}) }}
+				 {{ form_errors(form.username) }}
+			 </div>
+		 </div>
+		 <div class="form-group">
+			{{ form_label(form.password, '密码', {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+			<div class="col-sm-10">
+				{{ form_widget(form.password, {'attr':{'class':'form-control', 'placeholder':'请输入密码'}}) }}
+				{{ form_errors(form.password) }}
+			</div>
+		</div>
+		<div class="form-group">
+			{{ form_label(form.email, 'Email', {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+			<div class="col-sm-10">
+				{{ form_widget(form.email, {'attr':{'class':'form-control', 'placeholder':'请输入Email'}}) }}
+				{{ form_errors(form.email) }}
+			</div>
+		</div>
+		<div class="form-group">
+			{{ form_label(form.isActive, '状态', {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+			<div class="col-sm-10">
+				{{ form_widget(form.isActive, {'attr':{'class':'select2', 'data-placeholder':'请选择'}}) }}
+				{{ form_errors(form.isActive) }}
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label required" for="form_group">分组</label>
+			<div class="col-sm-10">
+				<select id="form_group" name="form[group]" class="select2 group" data-placeholder="请选择">
+					{% for role in roles %}
+						<option value="{{ role.id }}" {% if role.id == roleId %}selected="selected"{% endif %}>{{ role.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="form-group div-admin-pages" style="display:none;">
+			{{ form_label(form.adminStores, '管理页面', {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+			<div class="col-sm-10">
+				{{ form_widget(form.adminStores, {'attr':{}}) }}
+				{{ form_errors(form.adminStores) }}
+			</div>
+		</div>
+
+	</div><!-- panel-body -->
+	<div class="panel-footer">
+	   <div class="row">
+		<div class="col-sm-10 col-sm-offset-2">
+		 {{ form_rest(form) }}
+		 <button class="btn btn-primary" type="submit" id="btn-submit">提 交</button>
+	 </div>
+ </div>
+</div>
+</div><!-- panel -->
+</form>
+</div>
+{% endblock %}
+{% block title %}{{ pageTitle }}{% endblock %}
+	{% block javascripts %}
+		{{ parent() }}
+		<script src="{{ asset('bundles/app/admin/js/select2.min.js') }}"></script>
+		<script src="{{ asset('bundles/app/admin/js/jquery.validate.min.js') }}"></script>
+		<script type="text/javascript">
+			jQuery(document).ready(function(){
+				if( jQuery(".group").val() == 2){
+					jQuery(".div-admin-pages").show();
+				}
+				jQuery(".group").change(function(){
+					if(jQuery(this).val() == 2){
+						jQuery(".div-admin-pages").show();
+					}
+					else{
+						jQuery(".div-admin-pages").hide();
+					}
+				})
+				jQuery(".select2").select2({
+					width: '100%',
+					minimumResultsForSearch: -1
+				});
+				var forms = [
+				'[ name="{{ form.vars.full_name }}"]'
+				];
+				$( forms.join(',') ).submit( function( e ){
+					e.preventDefault();
+					postForm( $(this), function( response ){
+						if(response.ret != 0){
+							$('label.error').remove();
+							$('div.form-group').removeClass('has-error');
+							for(i = 0; i < response.errors.length; i ++){
+								$('#form_' + response.errors[i][0]).parents('div.form-group').addClass('has-error');
+								$('#form_' + response.errors[i][0]).focus().parent().append( '<label for="' + response.errors[i][0] +'" class="error">' + response.errors[i][1] + '</label>');
+								break;
+							}
+						}
+						else{
+							$('.panel-body,.panel-footer').hide();
+							$('.panel-title').html(response.msg).show();
+							$('html,body').animate({ scrollTop: 0 }, 100);
+						}
+					});
+					return false;
+				});
+	});
+	function postForm( $form, callback ){
+		/* * Get all form values */
+		var values = $form.serializeArray();
+		/* * Throw the form values to the server! */
+		$.ajax({
+			type : $form.attr( 'method' ),
+			url : $form.attr( 'action' ),
+			data : values,
+			beforeSend: function(XHR){
+			  $('#btn-submit').text('提交中...').attr('disabled',true);
+		  },
+		  success : function(data) {
+			callback( data );
+			$('#btn-submit').text('提交').attr('disabled',false);
+		}
+	});
+}
+</script>
+{% endblock %}

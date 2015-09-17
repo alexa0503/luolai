@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset:utf-8"/>
+	<title>{% block title %}{{ app.session.get('pageTitle') }}{% endblock %}</title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+	{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="{{ asset('bundles/app/default/css/css.css') }}">
+		<style>
+			#indexhead{ background:url('{{ asset("uploads/") }}{{ app.session.get("storeImg") }}') no-repeat 0 0; height:346px;}
+		</style>
+	{% endblock %}
+	<script type="text/javascript" src="{{ asset('bundles/app/default/js/jquery-1.8.0.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/app/default/js/hammer.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/app/default/js/hammer.fakemultitouch.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/app/default/js/hammer.showtouches.js') }}"></script>
+	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript">
+		var phoneWidth = parseInt(window.screen.width);
+		var phoneScale = phoneWidth / 640;
+		var ua = navigator.userAgent;
+		if (/Android (\d+\.\d+)/.test(ua)) {
+			var version = parseFloat(RegExp.$1);
+			if (version > 2.3) {
+				document.write('<meta name="viewport" content="width=640, minimum-scale = ' + phoneScale + ', maximum-scale = ' + phoneScale + ', target-densitydpi=device-dpi">');
+			} else {
+				document.write('<meta name="viewport" content="width=640, target-densitydpi=device-dpi">');
+			}
+		} else {
+			document.write('<meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">');
+		}
+	</script>
+	<script>
+		var wxData = {
+	            appId: '{{ app.session.get("wx_app_id") }}',
+	            timestamp: '{{ app.session.get("wx_timestamp") }}',
+	            nonceStr: '{{ app.session.get("wx_nonce_str") }}',
+	            signature: '{{ app.session.get("wx_signature") }}',
+	            title: '{{ app.session.get("wechat_title") }}',
+	            desc: '{{ app.session.get("wechat_desc") }}',
+	            shareUrl: '{{ app.session.get("wx_share_url") }}',
+	            imgUrl: 'http://{{ app.request.host }}{{ asset("uploads/") }}{{ app.session.get("wechat_img_url") }}',
+		};
+		function wxShare(data){
+			wx.config({
+				debug: false,
+				appId: data.appId,
+				timestamp: data.timestamp,
+				nonceStr: data.nonceStr,
+				signature: data.signature,
+				jsApiList: [
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage'
+				]
+			});
+			wx.ready(function () {
+				wx.onMenuShareAppMessage({
+					title: data.title,
+					desc: data.desc,
+					link: data.shareUrl,
+					imgUrl: data.imgUrl,
+					trigger: function (res) {
+					},
+					success: function (res) {
+					},
+					cancel: function (res) {
+					},
+					fail: function (res) {
+					}
+				});
+				wx.onMenuShareTimeline({
+					title: data.desc,
+					desc: data.desc,
+					link: data.shareUrl,
+					imgUrl: data.imgUrl,
+					trigger: function (res) {
+					},
+					success: function (res) {
+					},
+					cancel: function (res) {
+					},
+					fail: function (res) {
+					}
+				});
+			});
+		}
+		wxShare(wxData)
+	</script>
+	<link rel="shortcut icon" href="logo.ico"/>
+</head>
+<body>
+	{% block body %}{% endblock %}
+	{% block javascripts %}
+	{% endblock %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+		
+		<div class="leftpanel">
+			<div class="logopanel">
+				<h1><span>[</span> 后台管理系统 <span>]</span></h1>
+			</div><!-- logopanel -->
+
+			<div class="leftpanelinner">
+
+				<!-- This is only visible to small devices -->
+				<div class="visible-xs hidden-sm hidden-md hidden-lg">
+					<div class="media userlogged">
+						<img alt="" src="{{ asset('bundles/app/admin/images/photos/loggeduser.png') }}" class="media-object">
+						<div class="media-body">
+							<h4>John Doe</h4>
+							<span>"Life is so..."</span>
+						</div>
+					</div>
+
+					<h5 class="sidebartitle actitle">Account</h5>
+					<ul class="nav nav-pills nav-stacked nav-bracket mb30">
+						<li><a href="{{ url('admin_account') }}"><i class="fa fa-cog"></i> <span>账户设置</span></a></li>
+						<li><a href="{{ url('logout') }}"><i class="fa fa-sign-out"></i> <span>登出</span></a></li>
+					</ul>
+				</div>
+
+				<h5 class="sidebartitle">&nbsp;</h5>
+                
+                {{ knp_menu_render('AppBundle:Builder:mainMenu', { 'firstClass':'','lastClass':'','currentClass':'active'}) }}
+
+
+
+			</div><!-- leftpanelinner -->
+		</div><!-- leftpanel -->

@@ -1,0 +1,38 @@
+<div class="cutdetail">家居拖鞋&nbsp;帮忙砍价已有{{ bargain.num }}人<br>当前{{ discount_price | raw }}<em>元</em>&nbsp;可砍至{{ bargain.item.discountPrice | number_format }}元，还需{{ bargain.item.bargainNum - bargain.num }}人帮忙砍价</div>
+<div class="cutfunc">
+	{% if( app.request.get('user_id') == null or user.id == app.request.get('user_id')) %}
+	<a href="javascript:void(0)" onClick="sharepop()">让朋友帮忙砍</a>
+	{% else %}
+	<a href="{{ url('_bargain',{bargain_id:bargain.id, store_id:bargain.item.store.id}) }}" class="btn-bargain">帮他砍砍价</a>
+              			<a href="javascript:void(0)" onClick="sharepop()">我要参与活动</a>
+	{% endif %}
+</div>
+<div class="cutman">
+	<ul>
+		{% for log in logs %}
+		<li class="clearfix">
+                            <img src="{{ log.user.headImg }}/64"/>
+                            <p class="fl">{{ log.user.nickName }}</p>
+                            <p class="fr">砍了{{ log.price }}元</p>
+                        </li>
+		{% endfor %}
+	</ul>
+</div>
+<script type="text/javascript">
+	$().ready(function(){
+			$(".btn-bargain").click(function(){
+				var url = $(this).attr('href');
+				$.getJSON(url,function(json){
+					if(json.ret == 0){
+						$(".bgblack,.popsuc").show();
+						var url1 = '{{ url("_bargain_info",{bargain_id:bargain.id,store_id:bargain.item.store.id,user_id:app.request.get('user_id')}) }}'+'?_='+Math.random();
+						$('#bargain-info').load(url1);
+					}
+					else{
+						$(".poperr").show().find("p").html(json.msg);
+					}
+				});
+				return false;
+			});
+		})
+</script>

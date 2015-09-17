@@ -1,0 +1,78 @@
+{% extends 'AppBundle:admin:layout.html.twig' %}
+{% block content %}
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped ">
+			<tbody>
+				<tr>
+					<td style="width:180px;">店名</td>
+					<td>{{ store.storeName }}</td>
+				</tr>
+				<tr>
+					<td>页面标题</td>
+					<td>{{ store.title }}</td>
+				</tr>
+				<tr>
+					<td>页面头部图片</td>
+					<td><img src="{{ asset('uploads/') }}{{ store.pageHeaderImg }}" style="max-width:600px;max-height:600px;" /></td>
+				</tr>
+				<tr>
+					<td>店铺地址</td>
+					<td>{{ store.address }}</td>
+				</tr>
+				<tr>
+					<td>店铺电话</td>
+					<td>{{ store.tel }}</td>
+				</tr>
+				<tr>
+					<td>店铺公告</td>
+					<td>{{ store.info }}</td>
+				</tr>
+				<tr>
+					<td>活动时间</td>
+					<td>{{ store.description }}</td>
+				</tr>
+				<tr>
+					<td>微信分享标题</td>
+					<td>{{ store.wxTitle }}</td>
+				</tr>
+				<tr>
+					<td>微信分享描述</td>
+					<td>{{ store.wxDesc }}</td>
+				</tr>
+				<tr>
+					<td>微信分享图片</td>
+					<td><img src="{{ asset('uploads/') }}{{ store.wxImg }}"  style="max-width:600px;max-height:600px;" /></td>
+				</tr>
+				<tr>
+					<td>店铺密码</td>
+					<td>{{ store.password }}</td>
+				</tr>
+				<tr>
+					<td>状态</td>
+					<td>{% if store.isActive %}正常{% else %}<font color="red">禁用</font>{% endif %}</td>
+				</tr>
+				<tr>
+					<td>创建时间</td>
+					<td>{{ store.createTime | date("Y-m-d H:i:s") }}</td>
+				</tr>
+				<tr>
+					<td>创建IP</td>
+					<td>{{ store.createIp }}</td>
+				</tr>
+				<tr>
+					<td>活动地址</td>
+					<td>{{ url('_index',{store_id:store.id}) }}</td>
+				</tr>
+				<tr>
+					<td>活动地址二维码</td>
+					<td><img src="{{ bushidoio_qrcode_base64(url('_index',{store_id:store.id})) }}" width="160" height="160" /></td>
+				</tr>
+				<tr>
+					<td align="right">&nbsp;</td>
+					<td><a href="{{ url('admin_store_edit',{id:store.id}) }}" class="btn btn-primary">编辑</a> <a href="{{ url('admin_store') }}" class="btn btn-default">返回</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
+{% block title %}店铺管理{% endblock %}

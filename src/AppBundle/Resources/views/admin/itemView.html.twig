@@ -1,0 +1,66 @@
+{% extends 'AppBundle:admin:layout.html.twig' %}
+{% block content %}
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped ">
+			<tbody>
+				<tr>
+					<td style="width:180px;">商品名</td>
+					<td>{{ item.name }}</td>
+				</tr>
+				<tr>
+					<td>排序ID</td>
+					<td>{{ item.orderId }}</td>
+				</tr>
+				<tr>
+					<td>店铺名</td>
+					<td>{{ item.store.storeName }}</td>
+				</tr>
+				<tr>
+					<td>预览图片</td>
+					<td><img src="{{ asset('uploads/') }}{{ item.imgUrl }}" style="max-width:600px;max-height:600px;" /></td>
+				</tr>
+				<tr>
+					<td>细节图片</td>
+					<td><img src="{{ asset('uploads/') }}{{ item.detailImgUrl }}" style="max-width:600px;max-height:600px;" /></td>
+				</tr>
+				<tr>
+					<td>商品说明</td>
+					<td>{{ item.intro }}</td>
+				</tr>
+				<tr>
+					<td>数量</td>
+					<td>{{ item.num }}</td>
+				</tr>
+				<tr>
+					<td>已中数量</td>
+					<td>{{ item.winNum }}</td>
+				</tr>
+				<tr>
+					<td>需砍价次数</td>
+					<td>{{ item.bargainNum }}</td>
+				</tr>
+				<tr>
+					<td>原价</td>
+					<td>{{ item.price }}</td>
+				</tr>
+				<tr>
+					<td>折扣价</td>
+					<td>{{ item.discountPrice }}</td>
+				</tr>
+				<tr>
+					<td>创建时间</td>
+					<td>{{ item.createTime | date("Y-m-d H:i:s") }}</td>
+				</tr>
+				<tr>
+					<td>创建IP</td>
+					<td>{{ item.createIp }}</td>
+				</tr>
+				<tr>
+					<td align="right">&nbsp;</td>
+					<td><a href="{{ url('admin_item_edit',{id:item.id}) }}" class="btn btn-primary">编辑</a> <a href="{{ url('admin_item', {store_id:item.store.id}) }}" class="btn btn-default">返回</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
+{% block title %}店铺管理{% endblock %}

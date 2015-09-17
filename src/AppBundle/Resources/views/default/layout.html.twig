@@ -1,0 +1,92 @@
+{% extends 'AppBundle:default:base.html.twig' %}
+{% block body %}
+	<div id="wrapper">
+		{% block header %}
+			<div id="indexhead">
+				<span>{{ app.session.get('storeDescription') }}</span>
+			</div>
+			<div class="tipsnav">
+				<p >{{ app.session.get('storeInfo') }}</p>
+			</div>
+		{% endblock %}
+		{% block content %}
+		{% endblock %}
+	</div>
+	<div class="bnav">
+		<a href="{{ url('_index', {store_id:app.request.get('store_id')}) }}">商品列表</a>
+		<a href="javascript:void(0)" onClick="showrule()">砍价攻略</a>
+	</div>
+
+	<div id="bgblack"></div>
+	<div id="rulepop">
+		<span onClick="hiderule()"></span>
+		<p style="text-align:center; font-size:25px; color:#493a3e; padding-top:585px; line-height:1.5;">店名：{{ app.session.get('storeName') }}<br>地址：{{ app.session.get('storeAddress') }} <br>电话：{{ app.session.get('storeTel') }}</p>
+	</div>
+	<div class="sharetips none">
+	</div>
+	{% block pop %}
+	<div class="popsuc none" style="display: none;">
+		<div class="ico1"></div>
+		<span onclick="closeSuc()"></span>
+		<p>感谢你的参与</p>
+		<div>砍价成功</div>
+		<a href="javascript:void(0)" onclick="closeSuc()">关闭</a>
+	</div>
+	<div  class="poperr none">
+		<div class="ico2"></div>
+		<span onclick="closeErr()"></span>
+		<p>感谢你的参与</p>
+		<div>砍价失败</div>
+		<a href="javascript:void(0)" onclick="closeErr()">关闭</a>
+	</div>
+
+	<div class="picpop none">
+		<img src="" id="move">
+	</div>
+	{% endblock %}
+{% endblock %}
+{% block javascripts %}
+
+<script>
+    $(window).scroll(function () {
+        var t = $(window).scrollTop();
+        var hh = $(window).height();
+        $("#rulepop").css('top', t +116 )
+        $(".sharetips").css('top',t+77);
+
+    })
+    var hh=$(document).height();
+    $("#bgblack").height(hh)
+
+    function showrule(){
+        $("#bgblack,#rulepop").show();
+    }
+    function hiderule(){
+        $("#bgblack,#rulepop").hide();
+    }
+
+    function sharepop(){
+        $("#bgblack,.sharetips").show();
+        $("#bgblack,.sharetips").bind('touchstart',function(){
+            $("#bgblack,.sharetips").hide();
+        })
+    }
+    function showSuc(){
+        $("#bgblack,.popsuc").show();
+        return false;
+    }
+    function closeSuc(){
+        $("#bgblack,.popsuc").hide();
+        return false;
+    }
+    function showErr(){
+        $("#bgblack,.poperr").show();
+        return false;
+    }
+    function closeErr(){
+        $("#bgblack,.poperr").hide();
+        return false;
+    }
+
+</script>
+{% endblock %}

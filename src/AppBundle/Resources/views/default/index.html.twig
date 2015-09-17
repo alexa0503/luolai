@@ -1,0 +1,37 @@
+{% extends 'AppBundle:default:layout.html.twig' %}
+{% block content %}
+    <div style="height:14px;background-color:#8c0e32;"></div>
+    {% for item in store.activeItems %}
+    <div style="position: relative;" class="products clearfix">
+        <a href="{{ url('_item', {item_id:item.id,store_id:item.store.id}) }}"><img src="{{ asset('uploads/') }}{{ item.imgUrl }}"></a>
+        <div>
+            <p class="p1"><a href="{{ url('_item', {item_id:item.id,store_id:item.store.id}) }}">{{ item.name }}</a></p>
+            <p class="p2"><span class="red">已有{{  item.winNum }}人砍价</span></p>
+            <p class="p2">原价：{{ item.price | number_format }}元</p>
+            <p class="p3">砍价：<span class="red" style="font-size:28px;">{{ item.discountPrice | number_format }}元</span></p>
+        </div>
+        <a class="btncut" href="{{ url('_item', {item_id:item.id,store_id:item.store.id}) }}"></a>
+        {% if item.num <= item.winNum %}<div style="position: absolute;left: -7px;right: 0;border: none;"><a href="javascript:;"><image src="{{ asset('bundles/app/default/images/finished.png') }}" width="180" height="107" /></a></div>{% endif %}
+    </div>
+    {% endfor %}
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+        var hh=$(document).height();
+        $("#bgblack").height(hh)
+
+        function showrule(){
+            $("#bgblack,#rulepop").show();
+        }
+        function hiderule(){
+            $("#bgblack,#rulepop").hide();
+        }
+
+        $(window).scroll(function(){
+          var t=$(window).scrollTop();
+          $("#rulepop").css('top',t+116);
+      })
+
+    </script>
+{% endblock %}

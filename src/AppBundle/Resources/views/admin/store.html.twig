@@ -1,0 +1,69 @@
+{% extends 'AppBundle:admin:layout.html.twig' %}
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="table-responsive">
+      <!--<div id="table2_wrapper" class="dataTables_wrapper no-footer">
+      <div class="dataTables_length" id="table2_length"></div>
+      <div id="table2_filter" class="dataTables_filter"><a href="{{ url('admin_export') }}" class="label label-danger">导出中奖信息</a><label>Search:<input type="search" class="" placeholder="" aria-controls="table2"></label>--></div>
+      <table id="table2" class="table table-striped dataTable no-footer" role="grid" aria-describedby="table2_info">
+      <thead>
+       <tr role="row">
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1" style="width: 40px;">ID</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">店名</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">页面标题</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">店铺地址</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">店铺电话</th>
+        <!--
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">页面头部图片</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">店铺公告</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">店铺描述</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">微信分享标题</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">微信分享描述</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">微信分享图片</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">店铺密码</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">创建时间</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">创建IP</th>-->
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">状态</th>
+        <th tabindex="0" aria-controls="table2" rowspan="1" colspan="1">操作</th>
+      </tr>
+     </thead>
+     <tbody>
+     {% for p in pagination %}
+      <tr class="gradeA {% if loop.index is odd %} odd{% else %} even{% endif %}" role="row">
+        <td>{{ p.id }}</td>
+        <td>{{ p.storeName }}</td>
+        <td>{{ p.title }}</td>
+        <td>{{ p.address }}</td>
+        <td>{{ p.tel }}</td>
+        <!--
+        <td>{{ p.pageHeaderImg }}</td>
+        <td>{{ p.info }}</td>
+        <td>{{ p.description }}</td>
+        <td>{{ p.wxTitle }}</td>
+        <td>{{ p.wxDesc }}</td>
+        <td>{{ p.wxImg }}</td>
+        <td>{{ p.password }}</td>
+          <td>{{ p.createTime | date("Y-m-d H:i:s") }}</td>
+          <td>{{ p.createIp }}</td>-->
+        <td>{% if p.isActive %}正常{% else %}<font color="red">禁用</font>{% endif %}</td>
+        <td class="table-action"><a href="{{ url('admin_store_view',{id:p.id}) }}"><i class="fa fa-eye"></i></a>{% if is_granted('ROLE_SUPER_ADMIN') %}&nbsp;<a href="{{ url('admin_store_edit',{id:p.id}) }}"><i class="fa fa-pencil"></i></a>&nbsp;<i class="fa fa-trash-o"></i>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+<div class="dataTables_info" id="table2_info" role="status" aria-live="polite">共{{ pagination.getTotalItemCount }}条记录</div>
+<div class="dataTables_paginate paging_full_numbers" id="table2_paginate">
+{{ knp_pagination_render(pagination) }}
+</div>
+</div>
+</div><!-- table-responsive -->
+
+</div><!-- panel-body -->
+</div>
+{% endblock %}
+{% block title %}店铺管理{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+
+{% endblock %}

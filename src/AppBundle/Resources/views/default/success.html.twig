@@ -1,0 +1,23 @@
+{% extends 'AppBundle:default:layout.html.twig' %}
+{% block content %}
+	<div class="detailbox">
+
+        <div class="cutlist">
+            <div class="person">
+               <img src="{{ bargain.user.headImg }}/64"   >
+           </div>
+           <p class="pname">{{ bargain.user.nickName }}</p>
+
+           <div class="cutsucc">
+            {{ bargain.item.name }} 已有<b>{{ bargain.num }}</b>人帮忙砍价<br>
+            {{ discount_price | raw }}<em>元</em><a>{{ bargain.item.price }}<em>元</em></a><font>砍价成功!</font>
+        </div>
+        <div class="ewmbox">
+            <img src="{{ bushidoio_qrcode_base64(url('_ticket',{bargain_id:bargain.id, store_id: bargain.item.store.id})) }}" width="290" height="290" />
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+{% endblock %}
