@@ -10,7 +10,7 @@
             <p class="p2">原价：{{ item.price | number_format }}元</p>
             <p class="p3">砍价：<span class="red" style="font-size:28px;">{{ item.discountPrice | number_format }}元</span></p>
         </div>
-        <a class="btncut" href="{{ url('_item', {item_id:item.id,store_id:item.store.id}) }}"></a>
+        {% if item.num <= item.winNum %}<span class="btncut" ></span>{% else %}<a class="btncut" href="{{ url('_item', {item_id:item.id,store_id:item.store.id}) }}"></a>{% endif %}
         {% if item.num <= item.winNum %}<div style="position: absolute;left: -7px;right: 0;border: none;"><a href="javascript:;"><image src="{{ asset('bundles/app/default/images/finished.png') }}" width="180" height="107" /></a></div>{% endif %}
     </div>
     {% endfor %}

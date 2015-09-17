@@ -19,9 +19,9 @@
 			<div id="bargain-info">
 				<div class="cutdetail">{{ item.name }}&nbsp;帮忙砍价已有{{ bargain.num }}人<br>当前{{ discount_price | raw }}<em>元</em>&nbsp;可砍至{{ item.discountPrice | number_format }}元，还需{{ item.bargainNum - bargain.num }}人帮忙砍价</div>
 				<div class="cutfunc">
-					{% if ((app.request.get('user_id') == null or user.id == app.request.get('user_id')) and item.isActive == 1) %}
+					{% if (item.num <= item.winNum or item.isActive == 0) %}
+					{% elseif (app.request.get('user_id') == null or user.id == app.request.get('user_id')) %}
 						<a href="javascript:void(0)" onClick="sharepop()">让朋友帮忙砍</a>
-						{% elseif (item.num <= item.winNum or item.isActive == 0) %}
 						{% else %}
 						<a href="{{ url('_bargain',{bargain_id:bargain.id, store_id:item.store.id}) }}" class="btn-bargain">帮他砍砍价</a>
 						<a href="javascript:void(0)" onClick="sharepop()">我要参与活动</a>
